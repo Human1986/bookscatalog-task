@@ -1,6 +1,7 @@
 package com.epam.rd.autotasks.collections.map;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,17 +54,31 @@ public class Book implements Comparable<Book> {
      * The natural ordering is by title in ascending order,
      * then by cost in ascending order with {@code null}s at the end.
      *
-     * @param   o the object to be compared.
-     * @return  a negative integer, zero, or a positive integer as this object
-     *          is less than, equal to, or greater than the specified object.
-     *
+     * @param o the object to be compared.
+     * @return a negative integer, zero, or a positive integer as this object
+     * is less than, equal to, or greater than the specified object.
      * @throws NullPointerException if the specified object is null
-     * @throws ClassCastException if the specified object's type prevents it
-     *         from being compared to this object.
+     * @throws ClassCastException   if the specified object's type prevents it
+     *                              from being compared to this object.
      */
     @Override
     public int compareTo(Book o) {
-        // place your code here
-        return 0;
+        if (o == null) throw new NullPointerException();
+
+        int titleComparison = this.title.compareTo(o.getTitle());
+
+        if (titleComparison == 0) {
+
+            if (this.cost == null && o.getCost() == null) {
+                return 0;
+            } else if (this.cost == null) {
+                return 1;
+            } else if (o.getCost() == null) {
+                return -1;
+            }
+            return this.cost.compareTo(o.getCost());
+        }
+
+        return titleComparison;
     }
 }

@@ -41,18 +41,22 @@ public class Author implements Comparable<Author> {
      * The natural ordering is by first name in ascending order,
      * then by last name in ascending order.
      *
-     * @param   o the object to be compared.
-     * @return  a negative integer, zero, or a positive integer as this object
-     *          is less than, equal to, or greater than the specified object.
-     *
+     * @param o the object to be compared.
+     * @return a negative integer, zero, or a positive integer as this object
+     * is less than, equal to, or greater than the specified object.
      * @throws NullPointerException if the specified object is null
-     * @throws ClassCastException if the specified object's type prevents it
-     *         from being compared to this object.
+     * @throws ClassCastException   if the specified object's type prevents it
+     *                              from being compared to this object.
      */
 
     @Override
     public int compareTo(Author o) {
-        // place your code here
-        return 0;
+        if (o == null) throw new NullPointerException();
+        int compareFirstName = Integer.compare(this.firstName.compareTo(o.getFirstName()), 0);
+        if (compareFirstName == 0) {
+            return this.lastName.compareTo(o.getLastName());
+        }
+        return compareFirstName;
     }
+
 }

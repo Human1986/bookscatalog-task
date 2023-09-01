@@ -1,19 +1,17 @@
 package com.epam.rd.autotasks.collections.map;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class BooksCatalog {
     private static final String EOL = "\n";
-    private Map<Author, List<Book>> catalog;
+    private final Map<Author, List<Book>> catalog;
 
     public BooksCatalog() {
-        // place your code here
+        this.catalog = new TreeMap<>();
     }
 
     public BooksCatalog(Map<Author, List<Book>> catalog) {
-        // place your code here
+        this.catalog = new TreeMap<>(catalog);
     }
 
     /**
@@ -24,7 +22,12 @@ public class BooksCatalog {
      * if there is no such author in the catalog.
      */
     public List<Book> findByAuthor(Author author) {
-        // place your code here
+        if (author == null) throw new NullPointerException();
+
+        for (Map.Entry<Author, List<Book>> entry : catalog.entrySet()) {
+            if (entry.getKey().equals(author))
+                return entry.getValue();
+        }
         return null;
     }
 
@@ -33,8 +36,17 @@ public class BooksCatalog {
      * separated by the current operating system {@code lineSeparator}.
      */
     public String getAllAuthors() {
-        // place your code here
-        return null;
+        boolean end = true;
+        StringBuilder builder = new StringBuilder();
+        for (Author author : catalog.keySet()) {
+            if (end) {
+                end = false;
+            } else {
+                builder.append(EOL);
+            }
+            builder.append(author.getFirstName()).append(" ").append(author.getLastName());
+        }
+        return builder.toString();
     }
 
     /**
@@ -50,8 +62,16 @@ public class BooksCatalog {
      * by increasing cost.
      */
     public Map<Book, List<Author>> findAuthorsByBookTitle(String pattern) {
-        // place your code here
-        return null;
+        Map<Book, List<Author>> result = new TreeMap<>();
+        for (Map.Entry<Author, List<Book>> entry : catalog.entrySet()) {
+            for (Book book : entry.getValue()) {
+                if (book.getTitle().toLowerCase().contains(pattern.toLowerCase())) {
+                    result.putIfAbsent(book, new ArrayList<>());
+                    result.get(book).add(entry.getKey());
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -64,9 +84,23 @@ public class BooksCatalog {
      * @see Book class.
      */
     public Set<Book> findBooksByGenre(String pattern) {
-        // place your code here
-        return null;
+
+        Objects.requireNonNull(pattern);
+        Set<Book> books = new TreeSet<>();
+
+        for (List<Book> bookList : catalog.values()) {
+            for (Book book : bookList) {
+                for (String bGenre : book.getGenres()) {
+                    if (bGenre.toLowerCase().contains(pattern.toLowerCase())
+                            || bGenre.regionMatches(true, 0, pattern, 0, pattern.length())) {
+                        books.add(book);
+                    }
+                }
+            }
+        }
+        return books;
     }
+
 
     /**
      * Searches for authors of the specified book.
@@ -76,13 +110,33 @@ public class BooksCatalog {
      * @throws NullPointerException if the parameter is {@code null}
      */
     public List<Author> findAuthorsByBook(Book book) {
-        // place your code here
-        return null;
+        if (book == null) throw new NullPointerException();
+        List<Author> authors = new ArrayList<>();
+        for (Map.Entry<Author, List<Book>> entry : catalog.entrySet()) {
+            if (entry.getValue().contains(book)) {
+                authors.add(entry.getKey());
+            }
+        }
+        return authors;
     }
 
     @Override
     public String toString() {
-        // place your code here
-        return null;
+        StringBuilder sb = new StringBuilder();
+        boolean isEnd = true;
+        sb.append("{");
+        for (Map.Entry<Author, List<Book>> entry : catalog.entrySet()) {
+            if (isEnd) {
+                isEnd = false;
+            } else {
+                sb.append(", ");
+            }
+            sb.append(entry.getKey());
+            sb.append("=");
+            sb.append(entry.getValue());
+
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }
